@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Apex Pulse</title>
+<meta name="description" content="Device pulse and keep-alive checks for ApexOS. Runs in this tab, stores on this device.">
+<meta name="theme-color" content="#080a12">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <img src="./icons/icon-192.png" alt="" width="28" height="28">
+    <div>
+      <h1>Apex Pulse</h1>
+      <p id="statLine" class="stamp">Device pulse and keep-alive, measured in this tab.</p>
+    </div>
+  </div>
+  <div class="tools">
+    <span id="netPill" class="pill ghost">network unknown</span>
+    <button id="wakeBtn" class="ghost" type="button" aria-pressed="false">Keep screen awake</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="panel now">
+    <div class="row between">
+      <h2 class="subhead">Now</h2>
+      <p id="updated" class="stamp">reading&hellip;</p>
+    </div>
+    <div id="tiles" class="tiles"></div>
+  </section>
+
+  <section class="panel pulse">
+    <div class="row between">
+      <h2 class="subhead">Event loop</h2>
+      <p id="lagNow" class="stamp">&mdash;</p>
+    </div>
+    <canvas id="chart" width="720" height="200" aria-label="Event loop lag for the last minute"></canvas>
+    <p class="stamp clamp">Lag is how late a 250 ms timer fires. A flat line means the tab is idle; spikes mean it is busy rendering or blocked.</p>
+  </section>
+
+  <section class="panel watches">
+    <div class="row between">
+      <h2 class="subhead">Watch list</h2>
+      <div class="row">
+        <label class="label inline" for="interval">Repeat</label>
+        <select id="interval">
+          <option value="0">Off &mdash; check manually</option>
+          <option value="30">Every 30s</option>
+          <option value="60">Every minute</option>
+          <option value="300">Every 5 minutes</option>
+        </select>
+      </div>
+    </div>
+
+    <form id="watchForm" class="watch-form" autocomplete="off">
+      <input id="watchName" type="text" maxlength="24" placeholder="Name (optional)" aria-label="Watch name">
+      <input id="watchUrl" type="url" required placeholder="https://example.com/health" aria-label="URL to check">
+      <button class="primary" type="submit">Add</button>
+    </form>
+
+    <ul id="watchList" class="list"></ul>
+    <p id="watchEmpty" class="stamp" hidden>No watches yet. Add a URL you want to keep warm.</p>
+    <p class="stamp clamp">Checks run from the browser, so a reply arrives as an opaque response: Pulse can tell reached or failed and how long it took, but not the status code. Repeat checks only run while this tab is open and awake.</p>
+  </section>
+
+  <section class="panel log">
+    <div class="row between">
+      <h2 class="subhead">Log</h2>
+      <div class="row">
+        <button id="exportLog" type="button">Export JSON</button>
+        <button id="clearLog" class="danger" type="button">Clear</button>
+      </div>
+    </div>
+    <ol id="logList" class="log-list"></ol>
+    <p id="logEmpty" class="stamp" hidden>Nothing checked yet.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <span class="stamp">Everything here is measured on this device and kept in local storage. No account, no key, no upload.</span>
+  <a class="link" href="../settings/">Open Apex Settings &rarr;</a>
+</footer>
+
+<p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
+
+<script src="./app.js"></script>
+</body>
+</html>
